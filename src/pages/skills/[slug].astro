@@ -81,6 +81,17 @@ if (updated && updated !== created) meta.push(["Updated", updated]);
 
         <hr class="my-7 border-white/5" />
 
+        {
+          d.agentDescription && (
+            <div class="mb-6">
+              <h2 class="mb-2 text-sm font-semibold uppercase tracking-wider text-brand-300">
+                Description
+              </h2>
+              <p class="text-slate-300">{d.agentDescription}</p>
+            </div>
+          )
+        }
+
         <h2 class="mb-3 text-sm font-semibold uppercase tracking-wider text-brand-300">
           Instructions
         </h2>
@@ -115,9 +126,9 @@ if (updated && updated !== created) meta.push(["Updated", updated]);
 
           <h3 class="text-sm font-semibold text-white">Add this skill</h3>
           <p class="mt-1 text-xs text-slate-400">
-            Download the instructions and add them to your {
-              d.platforms.length === 1 ? d.platforms[0] : "agent"
-            } agent.
+            Download the instructions and add them to {
+              d.platforms.length === 1 ? d.platforms[0] : "your platform"
+            }.
           </p>
 
           <div class="mt-4 flex flex-col gap-2">
