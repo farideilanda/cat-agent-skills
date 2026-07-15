@@ -99,6 +99,92 @@ The same fields work in a `metadata.yaml` if you prefer YAML.
 A missing or invalid **required** field fails the PR with a message listing
 exactly what's wrong.
 
+## Cowork plugins (advanced)
+
+Besides single cross-platform skills, the gallery also hosts **Cowork plugins** —
+Microsoft 365 app packages that bundle one or more skills (plus optional MCP
+connectors) and run **only** in Copilot Cowork. See the
+[Cowork plugin development guide](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/cowork-plugin-development).
+
+A plugin submission is a `submissions/<slug>/` folder with a `metadata.json`
+sidecar plus a **single pre-built `.zip` M365 package**. It's auto-detected as a
+plugin (rather than a single skill) because the `.zip` has a **root
+`manifest.json`** instead of a root `SKILL.md`:
+
+```
+submissions/<slug>/
+├── metadata.json         # catalog sidecar (name/description/tags optional —
+│                         #  they fall back to the manifest)
+└── <name>.zip
+    ├── manifest.json     # M365 app manifest (manifestVersion "devPreview" or "1.28")
+    ├── color.png         # 192×192 color icon (referenced by the manifest)
+    ├── outline.png       # 32×32 outline icon (referenced by the manifest)
+    └── skills/
+        ├── <skill-a>/
+        │   └── SKILL.md  # frontmatter name must match the folder name
+        └── <skill-b>/
+            └── SKILL.md
+```
+
+The importer forces `platforms: ["Cowork"]` and `type: "plugin"`, publishes the
+`.zip` verbatim as the download package, and synthesizes the detail page
+(overview, the skills it contains, any connectors, and install steps). Plugins
+show a **Plugin** badge on their card and are filterable on the homepage.
+
+Validation is thorough and will fail the PR with an itemized list if anything is
+off: the manifest must be valid JSON with a `manifestVersion` of `"devPreview"`
+or `"1.28"` (real-world plugins and Microsoft's conversion script emit
+`"devPreview"`; the docs reference `"1.28"`), a GUID `id`,
+non-empty `name.short`/`description.short`, and `icons.color`/`icons.outline`
+that reference real PNGs of the exact required dimensions; there must be at least
+one `agentSkills` entry (or connector); and every `agentSkills[].folder` must
+exist with a `SKILL.md` whose frontmatter `name` is kebab-case and matches the
+folder. See [`legal-toolkit/`](./legal-toolkit) for a complete example, and copy
+[`_template-plugin/`](./_template-plugin) to start.
+
+## Scout automations (advanced)
+
+The gallery also hosts **Scout automations** — a scheduled/triggered `.json`
+(a schedule plus an ordered list of prompt steps) that runs **only** in Scout.
+
+An automation submission is a `submissions/<slug>/` folder with a `metadata.json`
+sidecar plus a **single `.json` automation export**. It's auto-detected as an
+automation because the one non-sidecar top-level file is a `.json` (not a `.zip`,
+not a `SKILL.md`):
+
+```
+submissions/<slug>/
+├── metadata.json          # catalog sidecar (name/description/tags optional —
+│                          #  they fall back to the automation's own fields)
+└── <name>.json            # the Scout automation export
+    ├── name               # non-empty string
+    ├── schedule           # required: single | interval | multi | monthly | cron
+    ├── steps[]            # { label, prompt } — the ordered prompt steps
+    └── …                  # optional: description, triggerType, model, etc.
+```
+
+The importer forces `platforms: ["Scout"]` and `type: "automation"`, publishes
+the `.json` **verbatim** as the download, and synthesizes the detail page
+(overview, the trigger/schedule, each step's prompt, and import steps).
+Automations show an **Automation** badge on their card and are filterable on the
+homepage. The exact `.json` you submit is what's offered for download and
+re-imported into Scout — so strip any personal paths or secrets first.
+
+This matches Scout's own GitHub-directory import convention: when Scout imports a
+bundle from a GitHub directory, **every root-level `.json` is an automation** and
+a `skills/` subdirectory holds skills. The file you submit here is the exact file
+Scout imports.
+
+Validation is a faithful port of Scout's import schema
+(`scripts/validate-automation.ts`) and will fail the PR with an itemized list if
+anything is off: `name` must be non-empty, every step needs a `label` and
+`prompt`, and `schedule` must be a valid discriminated union — including that an
+`interval`'s `intervalMinutes` divides 1440 evenly, a `monthly` selector can
+actually fire, and a `cron` expression is valid and fireable. Copy
+[`_template-automation/`](./_template-automation) to start, and see
+[`spend-more-time-with-friends-and-family/`](./spend-more-time-with-friends-and-family)
+for a complete example.
+
 ## Updating an existing skill
 
 Same path: edit the files in your `submissions/<slug>/` folder (or replace the

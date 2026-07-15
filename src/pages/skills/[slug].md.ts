@@ -3,7 +3,11 @@ import { getCollection } from "astro:content";
 
 export async function getStaticPaths() {
   const skills = await getCollection("skills");
-  return skills.map((skill) => ({ params: { slug: skill.id }, props: { skill } }));
+  // Plugins ship as an M365 .zip package and automations ship as a Scout .json,
+  // not a single SKILL.md, so neither exposes a `.md` download route.
+  return skills
+    .filter((skill) => skill.data.type !== "plugin" && skill.data.type !== "automation")
+    .map((skill) => ({ params: { slug: skill.id }, props: { skill } }));
 }
 
 function quote(value: string): string {
