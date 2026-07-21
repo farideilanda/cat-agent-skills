@@ -53,5 +53,5 @@ If missing, re-create/re-attach — never report success unverified.
 - **Self-contained only** — inline everything; no CDN links or external image URLs (embed or omit). This keeps the deck portable and offline-safe.
 - **Verify before claiming done** — confirm the file reached the user (artifact present in `output/`, or file attached to this turn) before saying it's ready.
 - **Match the delivery to the channel** — use artifact tools on Cowork; on Copilot Studio and other attachment-only hosts, return the file on the current turn and increment the file name (`-v2`, `-v3`, …) on every edit so the user always gets the fresh version.
-- **Right tool for the format** — redirect `.pptx` requests to pptx and static documents to html rather than forcing them here.
+- **Right tool for the format** — redirect `.pptx` requests to a PowerPoint/pptx workflow, and static document requests (memos/reports) to a document-writing workflow (e.g., Markdown/HTML document), rather than forcing them into this presentation template.
 - **Accessibility** — keep readable contrast in both themes and don't remove the keyboard navigation.
