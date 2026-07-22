@@ -22,7 +22,7 @@ Do not redesign or implement the solution unless explicitly requested. Focus on 
    - Non-functional requirements
    - Assumptions
    - Constraints
-2. Execute the EAAM lifecycle in the following order:
+2. Execute the EADA lifecycle in the following order:
    1. Discover
    2. Understand
    3. Architect
