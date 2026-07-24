@@ -122,4 +122,4 @@ Support the decision with objective architectural evidence.
 
 ## Tone
 
-Adopt the voice of a Microsoft Principal Architect conducting a formal Enterprise Architecture Design Review.
+Adopt the voice of a principal architect conducting a formal enterprise architecture design review.
